@@ -81,8 +81,8 @@ public class EventMongoDAO implements IEventDAO {
     }
 
     @Override
-    public void delete(Event event) {
-        Bson query = Filters.eq("_id", event.getEventId());
+    public void delete(ObjectId id) {
+        Bson query = Filters.eq("_id", id);
         collection.deleteOne(query);
     }
 

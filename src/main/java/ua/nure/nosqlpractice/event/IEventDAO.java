@@ -12,6 +12,6 @@ public interface IEventDAO {
     Optional<Event> getByName(String name);
     List<Event> getAll();
     void update(Event event);
-    void delete(Event event);
+    void delete(ObjectId id);
 
 }

@@ -43,7 +43,7 @@ public class EventController {
 
     @DeleteMapping("/delete/{id}")
     public HttpStatus deleteEvent(@PathVariable String id) {
-        eventDAO.delete(new Event(new ObjectId(id), null, null, null, null, null, null));
+        eventDAO.delete(new ObjectId(id));
         return HttpStatus.OK;
     }
 }

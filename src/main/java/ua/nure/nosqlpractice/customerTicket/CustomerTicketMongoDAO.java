@@ -77,8 +77,8 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
     }
 
     @Override
-    public void delete(CustomerTicket customerTicket) {
-        Bson query = Filters.eq("_id", customerTicket.getTicketId());
+    public void delete(ObjectId id) {
+        Bson query = Filters.eq("_id", id);
         collection.deleteOne(query);
     }
 

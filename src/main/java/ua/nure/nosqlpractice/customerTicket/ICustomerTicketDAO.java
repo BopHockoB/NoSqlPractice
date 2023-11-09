@@ -12,7 +12,7 @@ public interface ICustomerTicketDAO {
     Optional<CustomerTicket> getById(ObjectId id);
     List<CustomerTicket> getAll();
     void update(CustomerTicket customerTicket);
-    void delete(CustomerTicket customerTicket);
+    void delete(ObjectId id);
 
     Document customerTicketToDocument(CustomerTicket customerTicket);
     CustomerTicket documentToCustomerTicket(Document document);

@@ -12,7 +12,7 @@ public interface IUserDAO {
     Optional<User> getByLastName(String name);
     List<User> getAll();
     void update(User user);
-    void delete(User user);
+    void delete(ObjectId id);
     Document userToDocument(User user);
     User documentToUser(Document document);
 }

@@ -38,7 +38,7 @@ public class CustomerTicketController {
 
     @DeleteMapping("/delete/{id}")
     public HttpStatus deleteCustomerTicket(@PathVariable String id) {
-        customerTicketDAO.delete(new CustomerTicket(new ObjectId(id), null, null, null, null, null));
+        customerTicketDAO.delete(new ObjectId(id));
         return HttpStatus.OK;
     }
 }

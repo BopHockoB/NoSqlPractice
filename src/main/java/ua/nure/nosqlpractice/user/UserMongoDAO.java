@@ -89,8 +89,8 @@ public class UserMongoDAO implements IUserDAO {
     }
 
     @Override
-    public void delete(User user) {
-        Bson query = Filters.eq("_id", user.getUserId());
+    public void delete(ObjectId id) {
+        Bson query = Filters.eq("_id", id);
         collection.deleteOne(query);
     }
 

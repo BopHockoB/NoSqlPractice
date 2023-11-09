@@ -44,7 +44,7 @@ public class UserController {
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<HttpStatus> httpStatus(@PathVariable String id){
-        userDAO.delete(new User(new ObjectId(id), null, null, null, null, (short) 0, null));
+        userDAO.delete(new ObjectId(id));
         return ResponseEntity.ok(HttpStatus.OK);
     }
 }
