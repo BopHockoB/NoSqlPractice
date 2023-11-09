@@ -3,13 +3,14 @@ package ua.nure.nosqlpractice.user;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
 @RequiredArgsConstructor
+@RequestMapping("/user")
 public class UserController {
 
     private final IUserDAO userDAO;
@@ -29,21 +30,21 @@ public class UserController {
         return userDAO.getByLastName(name).orElse(null);
     }
 
-    @PostMapping("/create")
-    public HttpStatus createUser(@RequestBody User user){
+    @PostMapping(value = "/create", consumes = "application/json")
+    public String createUser(@RequestBody User user){
         userDAO.create(user);
-        return HttpStatus.CREATED;
+        return user.toString();
     }
 
     @PutMapping("/update")
-    public HttpStatus updateUser(@RequestBody User user){
+    public ResponseEntity<HttpStatus> updateUser(@RequestBody User user){
         userDAO.update(user);
-        return HttpStatus.OK;
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public HttpStatus httpStatus(@PathVariable String id){
-        userDAO.delete(new User(new ObjectId(id), null, null, null, null, null, null));
-        return HttpStatus.OK;
+    public ResponseEntity<HttpStatus> httpStatus(@PathVariable String id){
+        userDAO.delete(new User(new ObjectId(id), null, null, null, null, (short) 0, null));
+        return ResponseEntity.ok(HttpStatus.OK);
     }
 }

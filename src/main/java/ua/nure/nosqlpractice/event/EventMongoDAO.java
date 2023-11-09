@@ -15,12 +15,12 @@ import java.util.*;
 
 
 @Repository
-public class EventMongoDAO implements IEventDAO{
+public class EventMongoDAO implements IEventDAO {
 
     private final MongoCollection<Document> collection;
 
     @Autowired
-    public EventMongoDAO(MongoConnection mongoConnection){
+    public EventMongoDAO(MongoConnection mongoConnection) {
         collection = mongoConnection.getDatabase().getCollection("Event");
     }
 
@@ -33,19 +33,21 @@ public class EventMongoDAO implements IEventDAO{
     }
 
     @Override
-    public Optional<Event> getByName(String name){
+    public Optional<Event> getByName(String name) {
         Document query = new Document("eventName", name);
         Document document = collection.find(query).first();
 
         return Optional.ofNullable(documentToEvent(document));
     }
+
     @Override
     public Optional<Event> getById(ObjectId id) {
 
         Document query = new Document("_id", id);
         Document document = collection.find(query).first();
 
-        return Optional.ofNullable(documentToEvent(document));    }
+        return Optional.ofNullable(documentToEvent(document));
+    }
 
     @Override
     public List<Event> getAll() {
@@ -84,8 +86,30 @@ public class EventMongoDAO implements IEventDAO{
         collection.deleteOne(query);
     }
 
-    public Event documentToEvent(Document document) {
 
+    public Document eventToDocument(Event event) {
+        if (event != null) {
+            List<Document> ticketDocuments = new ArrayList<>();
+            for (Ticket ticket : event.getTickets()) {
+                Document ticketDocument = new Document()
+                        .append("name", ticket.getName())
+                        .append("price", ticket.getPrice())
+                        .append("availableTickets", ticket.getAvailableTickets());
+                ticketDocuments.add(ticketDocument);
+            }
+
+            return new Document("_id", event.getEventId())
+                    .append("eventName", event.getName())
+                    .append("description", event.getDescription())
+                    .append("eventDate", event.getEventDate())
+                    .append("address", Arrays.stream(event.getAddress()).toList())
+                    .append("eventCategories", event.getEventCategories())
+                    .append("tickets", ticketDocuments);
+        }
+        return null;
+    }
+
+    public Event documentToEvent(Document document) {
         if (document != null) {
             ObjectId eventId = document.getObjectId("_id");
             String name = document.getString("eventName");
@@ -99,51 +123,21 @@ public class EventMongoDAO implements IEventDAO{
 
             List<String> eventCategories = document.get("eventCategories", ArrayList.class);
 
-            // Cast docs Tickets to Map<Ticket, Integer>
-            List<Document> ticketsDoc = document.get("tickets", ArrayList.class);
-            Map<Ticket, Integer> tickets = new HashMap<>();
+            List<Ticket> tickets = new ArrayList<>();
+            List<Document> ticketDocuments = document.get("tickets", ArrayList.class);
+            for (Document ticketDocument : ticketDocuments) {
+                String ticketName = ticketDocument.getString("name");
+                Double ticketPrice = ticketDocument.getDouble("price");
+                Integer availableTickets = ticketDocument.getInteger("availableTickets");
 
-
-            for (Document ticketDoc : ticketsDoc) {
-
-                Ticket ticket = new Ticket(
-                        ticketDoc.getString("name"),
-                        ticketDoc.getDouble("price"));
-                int availableTickets = ticketDoc.getInteger("availableTickets");
-                tickets.put(ticket, availableTickets);
+                Ticket ticket = new Ticket(ticketName, ticketPrice, availableTickets);
+                tickets.add(ticket);
             }
 
             return new Event(eventId, name, description, eventDate, address, eventCategories, tickets);
         }
         return null;
     }
-
-
-    public Document eventToDocument(Event event){
-
-        if (event != null){
-        List<Document> ticketDocuments = new ArrayList<>();
-        for (Map.Entry<Ticket, Integer> entry : event.getTickets().entrySet()) {
-            Ticket ticket = entry.getKey();
-            Integer availableTickets = entry.getValue();
-
-            Document ticketDocument = new Document("price", ticket.getPrice())
-                    .append("name", ticket.getName())
-                    .append("availableTickets", availableTickets);
-
-            ticketDocuments.add(ticketDocument);
-        }
-
-        Document document = new Document("_id", event.getEventId())
-                .append("eventName", event.getName())
-                .append("eventDate", event.getEventDate())
-                .append("eventCategories", event.getEventCategories())
-                .append("address", Arrays.stream(event.getAddress()).toList())
-                .append("description", event.getDescription())
-                .append("tickets", ticketDocuments);
-        return document;
-        }
-
-        return null;
-    }
 }
+
+

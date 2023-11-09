@@ -104,7 +104,7 @@ public class UserMongoDAOTest {
 
         assertEquals("UpdatedFirstName", updatedUserResult.get().getFirstName());
         assertEquals("UpdatedLastName", updatedUserResult.get().getLastName());
-        assertEquals(30, updatedUserResult.orElse(null).getAge().shortValue());
+        assertEquals(30, updatedUserResult.orElse(null).getAge());
     }
 
     @Test
@@ -182,10 +182,10 @@ public class UserMongoDAOTest {
         eventCategories.add("Category 2");
         event.setEventCategories(eventCategories);
 
-        Map<Ticket, Integer> tickets = new HashMap<>();
-        tickets.put(new Ticket("Standard", 50.0), 100);
-        tickets.put(new Ticket("Premium", 75.0), 50);
-        event.setTickets(tickets);
+        List<Ticket> tickets2 = new ArrayList();
+        tickets2.add(new Ticket("Standard", 60.0, 80));
+        tickets2.add(new Ticket("Premium", 85.0, 40));
+        event.setTickets(tickets2);
 
         return event;
     }

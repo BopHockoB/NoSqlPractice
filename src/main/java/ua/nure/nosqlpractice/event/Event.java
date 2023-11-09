@@ -7,7 +7,7 @@ import org.bson.types.ObjectId;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
+
 
 @Data
 @AllArgsConstructor
@@ -28,5 +28,8 @@ public class Event {
     //Field Tickets is represented by Map where
     //Ticket is the class that contains name and price of a ticket type(Standard, Premium, etc.)
     //and Integer represents amount of available tickets to buy.
-    private Map<Ticket, Integer> Tickets;
+    private List<Ticket> Tickets;
+
+    //TODO move serialization and deserialization methods to this class from DAO
+
 }

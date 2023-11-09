@@ -44,9 +44,9 @@ public class EventMongoDAOTest {
         eventCategories2.add("Category 4");
         event2.setEventCategories(eventCategories2);
 
-        Map<Ticket, Integer> tickets2 = new HashMap<>();
-        tickets2.put(new Ticket("Standard", 60.0), 80);
-        tickets2.put(new Ticket("Premium", 85.0), 40);
+        List<Ticket> tickets2 = new ArrayList();
+        tickets2.add(new Ticket("Standard", 60.0, 80));
+        tickets2.add(new Ticket("Premium", 85.0, 40));
         event2.setTickets(tickets2);
 
         Event event3 = new Event();
@@ -63,9 +63,9 @@ public class EventMongoDAOTest {
         eventCategories3.add("Category 6");
         event3.setEventCategories(eventCategories3);
 
-        Map<Ticket, Integer> tickets3 = new HashMap<>();
-        tickets3.put(new Ticket("Standard", 70.0), 70);
-        tickets3.put(new Ticket("Premium", 95.0), 35);
+        List<Ticket> tickets3 = new ArrayList();
+        tickets3.add(new Ticket("Standard", 60.0, 80));
+        tickets3.add(new Ticket("Premium", 85.0, 40));
         event3.setTickets(tickets3);
 
         eventMongoDAO.create(event2);
@@ -139,9 +139,9 @@ public class EventMongoDAOTest {
         eventCategories.add("Category 2");
         event.setEventCategories(eventCategories);
 
-        Map<Ticket, Integer> tickets = new HashMap<>();
-        tickets.put(new Ticket("Standard", 50.0), 100);
-        tickets.put(new Ticket("Premium", 75.0), 50);
+        List<Ticket> tickets = new ArrayList();
+        tickets.add(new Ticket("Standard", 60.0, 80));
+        tickets.add(new Ticket("Premium", 85.0, 40));
         event.setTickets(tickets);
 
         return event;

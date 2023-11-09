@@ -21,4 +21,6 @@ public class CustomerTicket {
     private String ticketType;
     private Double price;
 
+    //TODO move serialization and deserialization methods to this class from DAO
+
 }
