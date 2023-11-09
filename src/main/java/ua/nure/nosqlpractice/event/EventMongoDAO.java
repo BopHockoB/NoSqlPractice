@@ -89,6 +89,8 @@ public class EventMongoDAO implements IEventDAO {
 
     public Document eventToDocument(Event event) {
         if (event != null) {
+                if(event.getEventId() == null)
+                    event.setEventId(new ObjectId());
             List<Document> ticketDocuments = new ArrayList<>();
             for (Ticket ticket : event.getTickets()) {
                 Document ticketDocument = new Document()

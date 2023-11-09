@@ -96,6 +96,9 @@ public class UserMongoDAO implements IUserDAO {
 
     public Document userToDocument(User user) {
         if (user != null) {
+            if(user.getUserId() == null)
+                user.setUserId(new ObjectId());
+
             List<ObjectId> ticketsId = new ArrayList<>();
             for (CustomerTicket ticket : user.getTickets()) {
                ticketsId.add(ticket.getTicketId());

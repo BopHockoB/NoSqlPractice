@@ -85,6 +85,8 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
     @Override
     public Document customerTicketToDocument(CustomerTicket customerTicket) {
         if (customerTicket != null) {
+            if(customerTicket.getTicketId() == null)
+                customerTicket.setTicketId(new ObjectId());
             return new Document("_id", customerTicket.getTicketId())
                     .append("eventId", customerTicket.getEvent().getEventId())
                     .append("userId", customerTicket.getUserId())

@@ -24,10 +24,6 @@ public class Event {
     //3rd - name of country
     private String[] address;
     private List<String> eventCategories;
-
-    //Field Tickets is represented by Map where
-    //Ticket is the class that contains name and price of a ticket type(Standard, Premium, etc.)
-    //and Integer represents amount of available tickets to buy.
     private List<Ticket> Tickets;
 
     //TODO move serialization and deserialization methods to this class from DAO
