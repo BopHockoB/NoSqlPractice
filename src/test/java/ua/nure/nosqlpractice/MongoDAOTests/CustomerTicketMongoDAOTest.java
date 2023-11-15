@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicketMongoDAO;
-import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventMongoDAO;
-import ua.nure.nosqlpractice.event.Ticket;
+import ua.nure.nosqlpractice.event.*;
 
 
 import java.util.*;
@@ -30,7 +28,7 @@ public class CustomerTicketMongoDAOTest {
 
     @Before
     public void setUp() {
-        customerTicketMongoDAO.getAll().forEach(ticket -> customerTicketMongoDAO.delete(ticket));
+        customerTicketMongoDAO.getAll().forEach(ticket -> customerTicketMongoDAO.delete(ticket.getTicketId()));
     }
 
     @Test
@@ -68,7 +66,7 @@ public class CustomerTicketMongoDAOTest {
         CustomerTicket customerTicket = createCustomerTicket();
         customerTicketMongoDAO.create(customerTicket);
 
-        customerTicketMongoDAO.delete(customerTicket);
+        customerTicketMongoDAO.delete(customerTicket.getTicketId());
 
         CustomerTicket deletedTicket = customerTicketMongoDAO.getById(customerTicket.getTicketId()).orElse(null);
         assertNull(deletedTicket);
@@ -95,12 +93,12 @@ public class CustomerTicketMongoDAOTest {
         event.setDescription("A description of the sample event");
         event.setEventDate(new Date());
 
-        String[] address = new String[]{"Sample Venue", "Sample City", "Sample Country"};
-        event.setAddress(address);
+        Venue venue = new Venue(null ,"Sample Venue", "Sample City", "Sample Country");
+        event.setVenue(venue);
 
-        List<String> eventCategories = new ArrayList<>();
-        eventCategories.add("Category 1");
-        eventCategories.add("Category 2");
+        List<EventCategory> eventCategories = new ArrayList<>();
+        eventCategories.add(new EventCategory(null, "EventCategory 1"));
+        eventCategories.add(new EventCategory(null, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets = new ArrayList();

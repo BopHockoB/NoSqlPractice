@@ -107,11 +107,16 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
             String ticketType = document.getString("ticketType");
             Double price = document.getDouble("price");
 
-
             Event event = eventDAO.getById(eventId).orElse(null);
 
-
-            return new CustomerTicket(ticketId, event, userId, purchasedDate, ticketType, price);
+            new CustomerTicket.CustomerTicketBuilder()
+                    .setTicketId(ticketId)
+                    .setEvent(event)
+                    .setUserId(userId)
+                    .setPurchasedDate(purchasedDate)
+                    .setTicketType(ticketType)
+                    .setPrice(price)
+                    .build();
         }
         return null;
     }
