@@ -10,6 +10,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.event.Event;
 import ua.nure.nosqlpractice.event.EventMongoDAO;
 import ua.nure.nosqlpractice.event.Ticket;
+import ua.nure.nosqlpractice.event.Venue;
 import ua.nure.nosqlpractice.mongoDb.MongoConnection;
 
 import java.util.*;
@@ -36,8 +37,8 @@ public class EventMongoDAOTest {
         event2.setDescription("A description of the second sample event");
         event2.setEventDate(new Date());
 
-        String[] address2 = new String[]{"Sample Venue 2", "Sample City 2", "Sample Country 2"};
-        event2.setAddress(address2);
+        Venue venue2 = new Venue(null ,"Sample Venue 2", "Sample City 2", "Sample Country 2");
+        event2.setVenue(venue2);
 
         List<String> eventCategories2 = new ArrayList<>();
         eventCategories2.add("Category 3");
@@ -55,8 +56,8 @@ public class EventMongoDAOTest {
         event3.setDescription("A description of the third sample event");
         event3.setEventDate(new Date());
 
-        String[] address3 = new String[]{"Sample Venue 3", "Sample City 3", "Sample Country 3"};
-        event3.setAddress(address3);
+        Venue venue3 = new Venue(null ,"Sample Venue 3", "Sample City 3", "Sample Country 3");
+        event3.setVenue(venue3);
 
         List<String> eventCategories3 = new ArrayList<>();
         eventCategories3.add("Category 5");
@@ -117,7 +118,7 @@ public class EventMongoDAOTest {
         eventMongoDAO.create(event);
 
         eventMongoDAO.delete(
-                event
+                event.getEventId()
         );
 
         Event deletedEvent = eventMongoDAO.getById(event.getEventId()).orElse(null);
@@ -131,8 +132,8 @@ public class EventMongoDAOTest {
         event.setDescription("A description of the sample event");
         event.setEventDate(new Date());
 
-        String[] address = new String[]{"Sample Venue", "Sample City", "Sample Country"};
-        event.setAddress(address);
+        Venue venue = new Venue(null ,"Sample Venue", "Sample City", "Sample Country");
+        event.setVenue(venue);
 
         List<String> eventCategories = new ArrayList<>();
         eventCategories.add("Category 1");

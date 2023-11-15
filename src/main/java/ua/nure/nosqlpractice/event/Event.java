@@ -1,30 +1,92 @@
 package ua.nure.nosqlpractice.event;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.bson.types.ObjectId;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Event {
+    private UUID id;
     private ObjectId eventId;
     private String name;
     private String description;
     private Date eventDate;
 
-    //Address field is consists of 3 cells:
-    //1st - name of event venue
-    //2nd - name of city
-    //3rd - name of country
-    private String[] address;
+    private Venue venue;
     private List<String> eventCategories;
-    private List<Ticket> Tickets;
+    private List<Ticket> tickets;
+
+    private Event(EventBuilder builder) {
+        this.id = builder.id;
+        this.eventId = builder.eventId;
+        this.name = builder.name;
+        this.description = builder.description;
+        this.eventDate = builder.eventDate;
+        this.venue = builder.address;
+        this.eventCategories = builder.eventCategories;
+        this.tickets = builder.tickets;
+    }
+
+    @NoArgsConstructor
+    public static class EventBuilder{
+        private UUID id;
+        private ObjectId eventId;
+        private String name;
+        private String description;
+        private Date eventDate;
+        private Venue address;
+        private List<String> eventCategories;
+        private List<Ticket> tickets;
+
+        public Event build(){
+            return new Event(this);
+        }
+        public EventBuilder setId(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public EventBuilder setEventId(ObjectId eventId) {
+            this.eventId = eventId;
+            return this;
+        }
+
+        public EventBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public EventBuilder setDescription(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public EventBuilder setEventDate(Date eventDate) {
+            this.eventDate = eventDate;
+            return this;
+        }
+
+        public EventBuilder setAddress(Venue address) {
+            this.address = address;
+            return this;
+        }
+
+        public EventBuilder setEventCategories(List<String> eventCategories) {
+            this.eventCategories = eventCategories;
+            return this;
+        }
+
+        public EventBuilder setTickets(List<Ticket> tickets) {
+            this.tickets = tickets;
+            return this;
+        }
+    }
 
     //TODO move serialization and deserialization methods to this class from DAO
 

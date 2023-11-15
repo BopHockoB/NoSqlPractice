@@ -100,11 +100,17 @@ public class EventMongoDAO implements IEventDAO {
                 ticketDocuments.add(ticketDocument);
             }
 
+            Venue venue = event.getVenue();
+            Document venueDocument = new Document()
+                    .append("venueName", venue.getName())
+                    .append("venueCity", venue.getCity())
+                    .append("venueCountry", venue.getCountry());
+
             return new Document("_id", event.getEventId())
                     .append("eventName", event.getName())
                     .append("description", event.getDescription())
                     .append("eventDate", event.getEventDate())
-                    .append("address", Arrays.stream(event.getAddress()).toList())
+                    .append("venue", venueDocument)
                     .append("eventCategories", event.getEventCategories())
                     .append("tickets", ticketDocuments);
         }
@@ -118,10 +124,13 @@ public class EventMongoDAO implements IEventDAO {
             String description = document.getString("description");
             Date eventDate = document.getDate("eventDate");
 
-            //Get list from document and cast it to array of size 3{Venue name, City, Country)
-            List<String> addressList = document.get("address", ArrayList.class);
-            String[] address = new String[addressList.size()];
-            address = addressList.toArray(address);
+            Document venueDocument = document.get("venue", Document.class);
+
+                Venue venue = new Venue.VenueBuilder()
+                        .setName(venueDocument.getString("venueName"))
+                        .setCity(venueDocument.getString("venueCity"))
+                        .setCountry(venueDocument.getString("venueCountry"))
+                        .build();
 
             List<String> eventCategories = document.get("eventCategories", ArrayList.class);
 
@@ -136,7 +145,15 @@ public class EventMongoDAO implements IEventDAO {
                 tickets.add(ticket);
             }
 
-            return new Event(eventId, name, description, eventDate, address, eventCategories, tickets);
+            return new Event.EventBuilder()
+                    .setEventId(eventId)
+                    .setName(name)
+                    .setDescription(description)
+                    .setEventDate(eventDate)
+                    .setAddress(venue)
+                    .setEventCategories(eventCategories)
+                    .setTickets(tickets)
+                    .build();
         }
         return null;
     }
