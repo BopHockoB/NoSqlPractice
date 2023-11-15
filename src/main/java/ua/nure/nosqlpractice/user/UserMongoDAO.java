@@ -122,7 +122,7 @@ public class UserMongoDAO implements IUserDAO {
             String password = document.getString("password");
             String firstName = document.getString("firstName");
             String lastName = document.getString("lastName");
-            Short age = document.getInteger("age").shortValue();
+            short age = document.getInteger("age").shortValue();
 
             List<CustomerTicket> tickets = new ArrayList<>();
             List<ObjectId> ticketsId = document.get("tickets", ArrayList.class);
@@ -133,7 +133,15 @@ public class UserMongoDAO implements IUserDAO {
             }
 
 
-            return new User(userId ,email, password, firstName, lastName, age, tickets);
+            return new User.UserBuilder()
+                    .setUserId(userId)
+                    .setEmail(email)
+                    .setPassword(password)
+                    .setFirstName(firstName)
+                    .setLastName(lastName)
+                    .setAge(age)
+                    .setTickets(tickets)
+                    .build();
         }
         return null;
     }

@@ -106,12 +106,20 @@ public class EventMongoDAO implements IEventDAO {
                     .append("venueCity", venue.getCity())
                     .append("venueCountry", venue.getCountry());
 
+            List<Document> eventCategoriesDocuments = new ArrayList<>();
+            for (EventCategory eventCategory : event.getEventCategories()) {
+                Document ticketDocument = new Document()
+                        .append("id", eventCategory.getId())
+                        .append("categoryName", eventCategory.getCategoryName());
+                ticketDocuments.add(ticketDocument);
+            }
+
             return new Document("_id", event.getEventId())
                     .append("eventName", event.getName())
                     .append("description", event.getDescription())
                     .append("eventDate", event.getEventDate())
                     .append("venue", venueDocument)
-                    .append("eventCategories", event.getEventCategories())
+                    .append("eventCategories", eventCategoriesDocuments)
                     .append("tickets", ticketDocuments);
         }
         return null;
@@ -125,14 +133,21 @@ public class EventMongoDAO implements IEventDAO {
             Date eventDate = document.getDate("eventDate");
 
             Document venueDocument = document.get("venue", Document.class);
-
-                Venue venue = new Venue.VenueBuilder()
+            Venue venue = new Venue.VenueBuilder()
                         .setName(venueDocument.getString("venueName"))
                         .setCity(venueDocument.getString("venueCity"))
                         .setCountry(venueDocument.getString("venueCountry"))
                         .build();
 
-            List<String> eventCategories = document.get("eventCategories", ArrayList.class);
+            List<EventCategory> eventCategories = new ArrayList<>();
+            List<Document> categoryDocuments = document.get("eventCategories", ArrayList.class);
+            for (Document categoryDocument : categoryDocuments) {
+                Long categoryId = Long.valueOf(categoryDocument.getInteger("id"));
+                String categoryName = categoryDocument.getString("categoryName");
+
+                EventCategory eventCategory = new EventCategory(categoryId, categoryName);
+                eventCategories.add(eventCategory);
+            }
 
             List<Ticket> tickets = new ArrayList<>();
             List<Document> ticketDocuments = document.get("tickets", ArrayList.class);

@@ -7,10 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventMongoDAO;
-import ua.nure.nosqlpractice.event.Ticket;
-import ua.nure.nosqlpractice.event.Venue;
+import ua.nure.nosqlpractice.event.*;
 import ua.nure.nosqlpractice.mongoDb.MongoConnection;
 
 import java.util.*;
@@ -40,9 +37,9 @@ public class EventMongoDAOTest {
         Venue venue2 = new Venue(null ,"Sample Venue 2", "Sample City 2", "Sample Country 2");
         event2.setVenue(venue2);
 
-        List<String> eventCategories2 = new ArrayList<>();
-        eventCategories2.add("Category 3");
-        eventCategories2.add("Category 4");
+        List<EventCategory> eventCategories2 = new ArrayList<>();
+        eventCategories2.add(new EventCategory(null, "EventCategory 3"));
+        eventCategories2.add(new EventCategory(null, "EventCategory 4"));
         event2.setEventCategories(eventCategories2);
 
         List<Ticket> tickets2 = new ArrayList();
@@ -59,9 +56,9 @@ public class EventMongoDAOTest {
         Venue venue3 = new Venue(null ,"Sample Venue 3", "Sample City 3", "Sample Country 3");
         event3.setVenue(venue3);
 
-        List<String> eventCategories3 = new ArrayList<>();
-        eventCategories3.add("Category 5");
-        eventCategories3.add("Category 6");
+        List<EventCategory> eventCategories3 = new ArrayList<>();
+        eventCategories3.add(new EventCategory(null, "EventCategory 5"));
+        eventCategories3.add(new EventCategory(null, "EventCategory 6"));
         event3.setEventCategories(eventCategories3);
 
         List<Ticket> tickets3 = new ArrayList();
@@ -89,7 +86,6 @@ public class EventMongoDAOTest {
     @Test
     public void testGetAll() {
         // Create several events and add them to the database
-        List<Event> eventsToInsert = new ArrayList<>();
 
         List<Event> events = eventMongoDAO.getAll();
         assertFalse(events.isEmpty());
@@ -135,9 +131,9 @@ public class EventMongoDAOTest {
         Venue venue = new Venue(null ,"Sample Venue", "Sample City", "Sample Country");
         event.setVenue(venue);
 
-        List<String> eventCategories = new ArrayList<>();
-        eventCategories.add("Category 1");
-        eventCategories.add("Category 2");
+        List<EventCategory> eventCategories = new ArrayList<>();
+        eventCategories.add(new EventCategory(null, "EventCategory 1"));
+        eventCategories.add(new EventCategory(null, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets = new ArrayList();

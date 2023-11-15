@@ -5,25 +5,22 @@ import org.bson.types.ObjectId;
 
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Event {
-    private UUID id;
     private ObjectId eventId;
     private String name;
     private String description;
     private Date eventDate;
 
     private Venue venue;
-    private List<String> eventCategories;
+    private List<EventCategory> eventCategories;
     private List<Ticket> tickets;
 
     private Event(EventBuilder builder) {
-        this.id = builder.id;
         this.eventId = builder.eventId;
         this.name = builder.name;
         this.description = builder.description;
@@ -35,21 +32,16 @@ public class Event {
 
     @NoArgsConstructor
     public static class EventBuilder{
-        private UUID id;
         private ObjectId eventId;
         private String name;
         private String description;
         private Date eventDate;
         private Venue address;
-        private List<String> eventCategories;
+        private List<EventCategory> eventCategories;
         private List<Ticket> tickets;
 
         public Event build(){
             return new Event(this);
-        }
-        public EventBuilder setId(UUID id) {
-            this.id = id;
-            return this;
         }
 
         public EventBuilder setEventId(ObjectId eventId) {
@@ -77,7 +69,7 @@ public class Event {
             return this;
         }
 
-        public EventBuilder setEventCategories(List<String> eventCategories) {
+        public EventBuilder setEventCategories(List<EventCategory> eventCategories) {
             this.eventCategories = eventCategories;
             return this;
         }

@@ -8,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
-import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventMongoDAO;
-import ua.nure.nosqlpractice.event.Ticket;
+import ua.nure.nosqlpractice.event.*;
 import ua.nure.nosqlpractice.mongoDb.MongoConnection;
 import ua.nure.nosqlpractice.user.User;
 import ua.nure.nosqlpractice.user.UserMongoDAO;
@@ -117,7 +115,7 @@ public class UserMongoDAOTest {
         assertTrue(retrievedUser.isPresent());
 
         // Delete the user
-        userMongoDAO.delete(retrievedUser.get());
+        userMongoDAO.delete(retrievedUser.get().getUserId());
 
         // Attempt to retrieve the deleted user
         Optional<User> deletedUser = userMongoDAO.getById(userId);
@@ -174,12 +172,12 @@ public class UserMongoDAOTest {
         event.setDescription("A description of the sample event");
         event.setEventDate(new Date());
 
-        String[] address = new String[]{"Sample Venue", "Sample City", "Sample Country"};
-        event.setAddress(address);
+        Venue venue = new Venue(null ,"Sample Venue", "Sample City", "Sample Country");
+        event.setVenue(venue);
 
-        List<String> eventCategories = new ArrayList<>();
-        eventCategories.add("Category 1");
-        eventCategories.add("Category 2");
+        List<EventCategory> eventCategories = new ArrayList<>();
+        eventCategories.add(new EventCategory(null, "EventCategory 1"));
+        eventCategories.add(new EventCategory(null, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets2 = new ArrayList();
