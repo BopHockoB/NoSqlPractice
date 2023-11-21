@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.customerTicket;
+package ua.nure.nosqlpractice.customerTicket.customerTicketDao;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
@@ -9,10 +9,11 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventMongoDAO;
-import ua.nure.nosqlpractice.event.IEventDAO;
-import ua.nure.nosqlpractice.mongoDb.MongoConnection;
+import ua.nure.nosqlpractice.event.eventDao.EventMongoDAO;
+import ua.nure.nosqlpractice.event.eventDao.IEventDAO;
+import ua.nure.nosqlpractice.dbConnections.MongoConnection;
 
 
 import java.util.ArrayList;
@@ -82,7 +83,7 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
         collection.deleteOne(query);
     }
 
-    @Override
+
     public Document customerTicketToDocument(CustomerTicket customerTicket) {
         if (customerTicket != null) {
             if(customerTicket.getTicketId() == null)
@@ -97,7 +98,7 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
         return null;
     }
 
-    @Override
+
     public CustomerTicket documentToCustomerTicket(Document document) {
         if (document != null) {
             ObjectId ticketId = document.getObjectId("_id");
@@ -111,7 +112,14 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
             Event event = eventDAO.getById(eventId).orElse(null);
 
 
-            return new CustomerTicket(ticketId, event, userId, purchasedDate, ticketType, price);
+            return new CustomerTicket.CustomerTicketBuilder()
+                    .setTicketId(ticketId)
+                    .setEvent(event)
+                    .setUserId(userId)
+                    .setPurchasedDate(purchasedDate)
+                    .setTicketType(ticketType)
+                    .setPrice(price)
+                    .build();
         }
         return null;
     }

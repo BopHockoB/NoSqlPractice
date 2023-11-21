@@ -8,9 +8,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ticket {
-    String name;
-    Double price;
-    Integer availableTickets;
+    private Integer id;
+    private String name;
+    private Double price;
+    private Integer availableTickets;
+
 
     //TODO move serialization and deserialization methods to this class from DAO
 }

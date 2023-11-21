@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.MongoDAOTests;
+package ua.nure.nosqlpractice.mongoDAOTests;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -9,9 +9,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.event.*;
-import ua.nure.nosqlpractice.mongoDb.MongoConnection;
+import ua.nure.nosqlpractice.dbConnections.MongoConnection;
+import ua.nure.nosqlpractice.event.eventDao.EventMongoDAO;
 import ua.nure.nosqlpractice.user.User;
-import ua.nure.nosqlpractice.user.UserMongoDAO;
+import ua.nure.nosqlpractice.user.userDao.UserMongoDAO;
 
 import java.util.*;
 
@@ -181,8 +182,8 @@ public class UserMongoDAOTest {
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets2 = new ArrayList();
-        tickets2.add(new Ticket("Standard", 60.0, 80));
-        tickets2.add(new Ticket("Premium", 85.0, 40));
+        tickets2.add(new Ticket(null,"Standard", 60.0, 80));
+        tickets2.add(new Ticket(null,"Premium", 85.0, 40));
         event.setTickets(tickets2);
 
         return event;

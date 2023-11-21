@@ -1,6 +1,7 @@
-package ua.nure.nosqlpractice.event;
+package ua.nure.nosqlpractice.event.eventDao;
 
 import org.bson.types.ObjectId;
+import ua.nure.nosqlpractice.event.Event;
 
 import java.util.List;
 import java.util.Optional;

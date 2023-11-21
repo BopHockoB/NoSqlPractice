@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.user;
+package ua.nure.nosqlpractice.user.userDao;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
@@ -8,12 +8,14 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
-import ua.nure.nosqlpractice.customerTicket.CustomerTicketMongoDAO;
-import ua.nure.nosqlpractice.customerTicket.ICustomerTicketDAO;
-import ua.nure.nosqlpractice.mongoDb.MongoConnection;
+import ua.nure.nosqlpractice.customerTicket.customerTicketDao.CustomerTicketMongoDAO;
+import ua.nure.nosqlpractice.customerTicket.customerTicketDao.ICustomerTicketDAO;
+import ua.nure.nosqlpractice.dbConnections.MongoConnection;
+import ua.nure.nosqlpractice.user.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.Optional;
 public class UserMongoDAO implements IUserDAO {
 
     private final MongoCollection<Document> collection;
+    @Qualifier("customerTicketMongoDAO")
     private final ICustomerTicketDAO customerTicketDAO;
 
     @Autowired

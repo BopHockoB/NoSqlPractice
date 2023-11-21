@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class EventCategory {
-        private Long id;
+        private Integer id;
         private String categoryName;
 
 }

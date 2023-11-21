@@ -1,19 +1,25 @@
 package ua.nure.nosqlpractice.user;
 
-import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.nosqlpractice.user.userDao.IUserDAO;
 
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/user")
 public class UserController {
 
     private final IUserDAO userDAO;
+
+    @Autowired
+    public UserController(@Qualifier("userMongoDAO") IUserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
     @GetMapping
     public List<User> findAllUsers() {
