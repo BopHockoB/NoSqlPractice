@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.mongoDb;
+package ua.nure.nosqlpractice.dbConnections;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.client.MongoClient;
@@ -25,8 +25,8 @@ public class MongoConnection {
 //    private static final int PORT = 27017;          // MongoDB server port
 //    private static final String DATABASE_NAME = "TicketMaster"; // Name of your database
 
-    private MongoClient mongoClient;
-    private MongoDatabase database;
+    private final MongoClient mongoClient;
+    private final MongoDatabase database;
 
 
     @Autowired

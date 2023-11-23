@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.event;
+package ua.nure.nosqlpractice.event.eventDao;
 
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoCollection;
@@ -9,7 +9,11 @@ import org.bson.conversions.Bson;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import ua.nure.nosqlpractice.mongoDb.MongoConnection;
+import ua.nure.nosqlpractice.dbConnections.MongoConnection;
+import ua.nure.nosqlpractice.event.Event;
+import ua.nure.nosqlpractice.event.EventCategory;
+import ua.nure.nosqlpractice.event.Ticket;
+import ua.nure.nosqlpractice.event.Venue;
 
 import java.util.*;
 
@@ -142,7 +146,7 @@ public class EventMongoDAO implements IEventDAO {
             List<EventCategory> eventCategories = new ArrayList<>();
             List<Document> categoryDocuments = document.get("eventCategories", ArrayList.class);
             for (Document categoryDocument : categoryDocuments) {
-                Long categoryId = Long.valueOf(categoryDocument.getInteger("id"));
+                Integer categoryId = categoryDocument.getInteger("id");
                 String categoryName = categoryDocument.getString("categoryName");
 
                 EventCategory eventCategory = new EventCategory(categoryId, categoryName);
@@ -156,7 +160,7 @@ public class EventMongoDAO implements IEventDAO {
                 Double ticketPrice = ticketDocument.getDouble("price");
                 Integer availableTickets = ticketDocument.getInteger("availableTickets");
 
-                Ticket ticket = new Ticket(ticketName, ticketPrice, availableTickets);
+                Ticket ticket = new Ticket(null ,ticketName, ticketPrice, availableTickets);
                 tickets.add(ticket);
             }
 

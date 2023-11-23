@@ -1,18 +1,21 @@
 package ua.nure.nosqlpractice.event;
 
-import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.nosqlpractice.event.eventDao.IEventDAO;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/event")
-@RequiredArgsConstructor
-public class EventController {
 
-    private final IEventDAO eventDAO;
+public class EventController {
+    @Autowired
+    @Qualifier("eventMongoDAO")
+    private IEventDAO eventDAO;
 
     @GetMapping
     public List<Event> findAllEvents() {

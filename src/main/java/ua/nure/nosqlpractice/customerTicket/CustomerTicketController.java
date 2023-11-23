@@ -1,18 +1,23 @@
 package ua.nure.nosqlpractice.customerTicket;
 
-import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.nosqlpractice.customerTicket.customerTicketDao.ICustomerTicketDAO;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/customer-tickets")
-@RequiredArgsConstructor
+
 public class CustomerTicketController {
 
-    private final ICustomerTicketDAO customerTicketDAO;
+    @Autowired
+    @Qualifier("customerTicketMySQLDAO")
+    private ICustomerTicketDAO customerTicketDAO;
 
     @GetMapping
     public List<CustomerTicket> findAllCustomerTickets() {

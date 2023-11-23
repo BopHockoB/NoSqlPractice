@@ -1,4 +1,4 @@
-package ua.nure.nosqlpractice.MongoDAOTests;
+package ua.nure.nosqlpractice.mongoDAOTests;
 
 import org.bson.types.ObjectId;
 import org.junit.Before;
@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.event.*;
-import ua.nure.nosqlpractice.mongoDb.MongoConnection;
+import ua.nure.nosqlpractice.dbConnections.MongoConnection;
+import ua.nure.nosqlpractice.event.eventDao.EventMongoDAO;
 
 import java.util.*;
 
@@ -43,8 +44,8 @@ public class EventMongoDAOTest {
         event2.setEventCategories(eventCategories2);
 
         List<Ticket> tickets2 = new ArrayList();
-        tickets2.add(new Ticket("Standard", 60.0, 80));
-        tickets2.add(new Ticket("Premium", 85.0, 40));
+        tickets2.add(new Ticket(null, "Standard", 60.0, 80));
+        tickets2.add(new Ticket(null, "Premium", 85.0, 40));
         event2.setTickets(tickets2);
 
         Event event3 = new Event();
@@ -62,8 +63,8 @@ public class EventMongoDAOTest {
         event3.setEventCategories(eventCategories3);
 
         List<Ticket> tickets3 = new ArrayList();
-        tickets3.add(new Ticket("Standard", 60.0, 80));
-        tickets3.add(new Ticket("Premium", 85.0, 40));
+        tickets3.add(new Ticket(null,"Standard", 60.0, 80));
+        tickets3.add(new Ticket(null,"Premium", 85.0, 40));
         event3.setTickets(tickets3);
 
         eventMongoDAO.create(event2);
@@ -128,17 +129,17 @@ public class EventMongoDAOTest {
         event.setDescription("A description of the sample event");
         event.setEventDate(new Date());
 
-        Venue venue = new Venue(null ,"Sample Venue", "Sample City", "Sample Country");
+        Venue venue = new Venue(1 ,"Sample Venue", "Sample City", "Sample Country");
         event.setVenue(venue);
 
         List<EventCategory> eventCategories = new ArrayList<>();
-        eventCategories.add(new EventCategory(null, "EventCategory 1"));
-        eventCategories.add(new EventCategory(null, "EventCategory 2"));
+        eventCategories.add(new EventCategory(1, "EventCategory 1"));
+        eventCategories.add(new EventCategory(2, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets = new ArrayList();
-        tickets.add(new Ticket("Standard", 60.0, 80));
-        tickets.add(new Ticket("Premium", 85.0, 40));
+        tickets.add(new Ticket(1,"Standard", 60.0, 80));
+        tickets.add(new Ticket(2,"Premium", 85.0, 40));
         event.setTickets(tickets);
 
         return event;

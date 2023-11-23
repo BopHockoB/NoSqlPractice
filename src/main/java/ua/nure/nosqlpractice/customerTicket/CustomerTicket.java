@@ -1,19 +1,19 @@
 package ua.nure.nosqlpractice.customerTicket;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.Ticket;
 
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerTicket {
+
     private ObjectId ticketId;
     private Event event;
     private ObjectId userId;
@@ -21,7 +21,7 @@ public class CustomerTicket {
     private String ticketType;
     private Double price;
 
-    public CustomerTicket(CustomerTicketBuilder builder) {
+    private CustomerTicket(CustomerTicketBuilder builder) {
         this.ticketId = builder.ticketId;
         this.event = builder.event;
         this.userId = builder.userId;
@@ -30,8 +30,9 @@ public class CustomerTicket {
         this.price = builder.price;
     }
 
+    // Getter methods for CustomerTicket fields (assuming they exist)
 
-    @NoArgsConstructor
+    // Create a static inner class for the CustomerTicketBuilder
     public static class CustomerTicketBuilder {
         private ObjectId ticketId;
         private Event event;
@@ -40,10 +41,7 @@ public class CustomerTicket {
         private String ticketType;
         private Double price;
 
-        public CustomerTicket build() {
-            return new CustomerTicket(this);
-        }
-
+        // Builder methods for setting fields
         public CustomerTicketBuilder setTicketId(ObjectId ticketId) {
             this.ticketId = ticketId;
             return this;
@@ -74,7 +72,11 @@ public class CustomerTicket {
             return this;
         }
 
-        //TODO move serialization and deserialization methods to this class from DAO
-
+        // Build method to create a CustomerTicket instance
+        public CustomerTicket build() {
+            return new CustomerTicket(this);
+        }
     }
+    //TODO move serialization and deserialization methods to this class from DAO
+
 }

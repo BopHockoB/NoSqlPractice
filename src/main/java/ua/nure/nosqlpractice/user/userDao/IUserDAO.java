@@ -1,7 +1,7 @@
-package ua.nure.nosqlpractice.user;
+package ua.nure.nosqlpractice.user.userDao;
 
-import org.bson.Document;
 import org.bson.types.ObjectId;
+import ua.nure.nosqlpractice.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,6 +13,4 @@ public interface IUserDAO {
     List<User> getAll();
     void update(User user);
     void delete(ObjectId id);
-    Document userToDocument(User user);
-    User documentToUser(Document document);
 }

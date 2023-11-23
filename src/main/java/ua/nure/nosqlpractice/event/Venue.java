@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Venue {
-    private Long id;
+    private Integer id;
     private String name;
     private String city;
     private String country;
@@ -22,7 +22,7 @@ public class Venue {
 
     @NoArgsConstructor
     public static class VenueBuilder{
-        private Long id;
+        private Integer id;
         private String name;
         private String city;
         private String country;
@@ -31,7 +31,7 @@ public class Venue {
             return new Venue(this);
         }
 
-        public VenueBuilder setId(Long id) {
+        public VenueBuilder setId(Integer id) {
             this.id = id;
             return this;
         }
