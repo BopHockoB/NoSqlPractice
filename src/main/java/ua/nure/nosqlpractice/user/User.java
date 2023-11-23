@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -24,7 +25,7 @@ public class User {
     private String lastName;
     @JsonProperty("age") // Annotate the field with the desired JSON field name
     private short age;
-
+    @JsonProperty("tickets") // Annotate the field with the desired JSON field name
     private List<CustomerTicket> tickets;
 
     private User(UserBuilder builder){
@@ -51,6 +52,7 @@ public class User {
             return new User(this);
         }
 
+        // Builder methods for setting fields
         public UserBuilder setUserId(ObjectId userId) {
             this.userId = userId;
             return this;
