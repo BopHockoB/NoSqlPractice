@@ -3,6 +3,8 @@ package ua.nure.nosqlpractice.user.userDao;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 import ua.nure.nosqlpractice.dbConnections.MySQLConnection;
+import ua.nure.nosqlpractice.observers.Observable;
+import ua.nure.nosqlpractice.observers.Observer;
 import ua.nure.nosqlpractice.user.User;
 
 
@@ -12,11 +14,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class UserMySQLDAO implements IUserDAO {
+public class UserMySQLDAO implements IUserDAO, Observable {
     private final Connection connection;
 
+    private final List<Observer> observers;
+
     public UserMySQLDAO() throws SQLException {
-        connection = MySQLConnection.getDBSqlConnection();
+        this.connection = MySQLConnection.getDBSqlConnection();
+        this.observers = new ArrayList<>();
     }
 
     @Override
@@ -32,6 +37,9 @@ public class UserMySQLDAO implements IUserDAO {
             statement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            notifyObservers(user.toString() + " was inserted in DB");
         }
     }
 
@@ -115,6 +123,9 @@ public class UserMySQLDAO implements IUserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            notifyObservers(user.toString() + " was updated in DB");
+        }
     }
 
     @Override
@@ -126,5 +137,23 @@ public class UserMySQLDAO implements IUserDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        finally {
+            notifyObservers("User with id " + id.toHexString() + " was vanished from DB");
+        }
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(Object o) {
+        observers.forEach(observer -> observer.onDataChanged(o));
     }
 }

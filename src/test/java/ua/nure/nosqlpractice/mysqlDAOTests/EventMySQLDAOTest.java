@@ -73,8 +73,8 @@ public class EventMySQLDAOTest {
         event.setEventCategories(eventCategories);
 
         List<Ticket> tickets = new ArrayList();
-        tickets.add(new Ticket(null,"Standard", 60.0, 80));
-        tickets.add(new Ticket(null,"Premium", 85.0, 40));
+        tickets.add(new Ticket(null,new TicketType(1, "Standard"), 60.0, 80));
+        tickets.add(new Ticket(null,new TicketType(2, "Premium"), 85.0, 40));
         event.setTickets(tickets);
 
         return event;

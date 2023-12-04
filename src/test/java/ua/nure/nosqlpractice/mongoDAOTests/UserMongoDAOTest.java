@@ -160,7 +160,7 @@ public class UserMongoDAOTest {
         customerTicket.setEvent(event);
         customerTicket.setUserId(null);
         customerTicket.setPurchasedDate(new Date());
-        customerTicket.setTicketType("Sample Ticket Type");
+        customerTicket.setTicketType(new TicketType(null, "Sample Ticket Type"));
         customerTicket.setPrice(50.0);
 
         return customerTicket;
@@ -181,9 +181,9 @@ public class UserMongoDAOTest {
         eventCategories.add(new EventCategory(null, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
-        List<Ticket> tickets2 = new ArrayList();
-        tickets2.add(new Ticket(null,"Standard", 60.0, 80));
-        tickets2.add(new Ticket(null,"Premium", 85.0, 40));
+        List<Ticket> tickets2 = new ArrayList<>();
+        tickets2.add(new Ticket(null,new TicketType(null, "Standard"), 60.0, 80));
+        tickets2.add(new Ticket(null,new TicketType(null, "Premium"), 85.0, 40));
         event.setTickets(tickets2);
 
         return event;

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Create New Event</title>
+</head>
+<body>
+<h1>Create New Event</h1>
+<form method="post" th:action="@{/events/new}" th:object="${event}">
+  <!-- Input fields for event details -->
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" th:field="*{name}" required/>
+
+  <label for="description">Description:</label>
+  <input type="text" id="description" name="description" th:field="*{description}" required/>
+
+  <label for="eventDate">Event Date:</label>
+  <input type="date" id="eventDate" name="eventDate" th:pattern="yyyy-MM-dd" th:field="*{eventDate}" required/>
+
+  <!-- Input fields for Venue -->
+  <h2>Venue Details</h2>
+  <label for="venue.name">Venue Name:</label>
+  <input type="text" id="venue.name" name="venue.name" th:field="*{venue.name}" required/>
+
+  <label for="venue.city">City:</label>
+  <input type="text" id="venue.city" name="venue.city" th:field="*{venue.city}" required/>
+
+  <label for="venue.country">Country:</label>
+  <input type="text" id="venue.country" name="venue.country" th:field="*{venue.country}" required/>
+
+  <!-- Add other event details here -->
+
+  <button type="submit">Create Event</button>
+</form>
+<a href="/events">Back to Events</a>
+</body>
+</html>

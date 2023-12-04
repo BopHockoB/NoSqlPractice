@@ -1,10 +1,10 @@
-package ua.nure.nosqlpractice.event;
+package ua.nure.nosqlpractice.event.eventControllers;
 
 import org.bson.types.ObjectId;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.nosqlpractice.event.Event;
 import ua.nure.nosqlpractice.event.eventDao.IEventDAO;
 
 import java.util.List;
@@ -12,10 +12,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/event")
 
-public class EventController {
-    @Autowired
-    @Qualifier("eventMongoDAO")
-    private IEventDAO eventDAO;
+public class EventRESTController {
+    private final IEventDAO eventDAO;
+
+    public EventRESTController(@Qualifier("eventMongoDAO") IEventDAO eventDAO) {
+        this.eventDAO = eventDAO;
+    }
 
     @GetMapping
     public List<Event> findAllEvents() {

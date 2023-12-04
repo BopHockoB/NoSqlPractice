@@ -1,12 +1,12 @@
 package ua.nure.nosqlpractice.event.eventDao;
 
+import ch.qos.logback.core.BasicStatusManager;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Repository;
 import ua.nure.nosqlpractice.dbConnections.MySQLConnection;
-import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventCategory;
-import ua.nure.nosqlpractice.event.Ticket;
-import ua.nure.nosqlpractice.event.Venue;
+import ua.nure.nosqlpractice.event.*;
+import ua.nure.nosqlpractice.observers.Observable;
+import ua.nure.nosqlpractice.observers.Observer;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class EventMySQLDAO implements IEventDAO {
+public class EventMySQLDAO implements IEventDAO, Observable {
 
     private final Connection connection;
+    private final List<Observer> observers;
 
     public EventMySQLDAO() throws SQLException {
         connection = MySQLConnection.getDBSqlConnection();
+        observers = new ArrayList<>();
     }
 
     @Override
@@ -33,25 +35,30 @@ public class EventMySQLDAO implements IEventDAO {
             preparedStatement.setString(2, event.getName());
             preparedStatement.setString(3, event.getDescription());
             preparedStatement.setTimestamp(4, new Timestamp(event.getEventDate().getTime()));
-            if (event.getVenue() != null)
+            if (event.getVenue().getId() != null)
                 preparedStatement.setInt(5, event.getVenue().getId());
             else
                 preparedStatement.setNull(5, Types.INTEGER );
             preparedStatement.executeUpdate();
 
-            createTickets(event.getTickets(), event.getEventId());
-            linkEventAndCategories(event.getEventCategories(), event.getEventId());
+            if (!event.getTickets().isEmpty() || event.getTickets() != null)
+                createTickets(event.getTickets(), event.getEventId());
+            if (!event.getEventCategories().isEmpty() || event.getEventCategories() != null)
+                linkEventAndCategories(event.getEventCategories(), event.getEventId());
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            notifyObservers(event.toString() + " was inserted in DB");
         }
     }
     private void createTickets(List<Ticket> tickets, ObjectId eventId) throws SQLException {
 
-            String query = "INSERT INTO Ticket (name, price, available_tickets, event_id) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO Ticket (ticket_type_id, price, available_tickets, event_id) VALUES (?, ?, ?, ?)";
             PreparedStatement preparedStatement = connection.prepareStatement(query);
 
             for (Ticket ticket : tickets) {
-                preparedStatement.setString(1, ticket.getName());
+                preparedStatement.setInt(1, ticket.getTicketType().getId());
                 preparedStatement.setDouble(2, ticket.getPrice());
                 preparedStatement.setInt(3, ticket.getAvailableTickets());
                 preparedStatement.setObject(4, eventId.toHexString());
@@ -76,6 +83,7 @@ public class EventMySQLDAO implements IEventDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return Optional.empty();
     }
 
@@ -119,7 +127,10 @@ public class EventMySQLDAO implements IEventDAO {
             preparedStatement.setString(1, event.getName());
             preparedStatement.setString(2, event.getDescription());
             preparedStatement.setTimestamp(3, new Timestamp(event.getEventDate().getTime()));
-            preparedStatement.setInt(4, event.getVenue().getId());
+            if (event.getVenue().getId() != null)
+                preparedStatement.setInt(4, event.getVenue().getId());
+            else
+                preparedStatement.setNull(4, Types.INTEGER);
             preparedStatement.setString(5, event.getEventId().toHexString());
             preparedStatement.executeUpdate();
             
@@ -127,6 +138,9 @@ public class EventMySQLDAO implements IEventDAO {
             updateTickets(event.getTickets(), event.getEventId());
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            notifyObservers(event.toString() + " was updated in DB");
         }
     }
 
@@ -141,6 +155,9 @@ public class EventMySQLDAO implements IEventDAO {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            notifyObservers(id.toHexString() + " was vanished from DB");
         }
     }
 
@@ -204,12 +221,27 @@ public class EventMySQLDAO implements IEventDAO {
         ticketsStatement.setObject(1, eventId.toHexString());
         ResultSet ticketsResultSet = ticketsStatement.executeQuery();
 
+        String typeQuery = "SELECT * FROM ticket_type WHERE ticket_type_id = ?";
+        PreparedStatement typeStatement = connection.prepareStatement(typeQuery);
+
+
         while (ticketsResultSet.next()) {
             int ticketId = ticketsResultSet.getInt("ticket_id");
-            String ticketName = ticketsResultSet.getString("name");
+
+            int typeId = ticketsResultSet.getInt("ticket_type_id");
+
+            String typeName = null;
+
+            typeStatement.setInt(1, typeId);
+            ResultSet typeResultSet = typeStatement.executeQuery();
+            if (typeResultSet.next())
+               typeName = typeResultSet.getString("type_name");
+
             double price = ticketsResultSet.getDouble("price");
             int availableTickets = ticketsResultSet.getInt("available_tickets");
-            tickets.add(new Ticket(ticketId, ticketName, price, availableTickets));
+
+
+            tickets.add(new Ticket(ticketId, new TicketType(typeId, typeName), price, availableTickets));
         }
 
         return tickets;
@@ -219,11 +251,11 @@ public class EventMySQLDAO implements IEventDAO {
         deleteTickets(eventId);
 
         // Then, insert the updated tickets for the event
-        String insertQuery = "INSERT INTO Ticket (name, price, available_tickets, event_id) VALUES (?, ?, ?, ?)";
+        String insertQuery = "INSERT INTO Ticket (ticket_type_id, price, available_tickets, event_id) VALUES (?, ?, ?, ?)";
         PreparedStatement insertStatement = connection.prepareStatement(insertQuery);
 
         for (Ticket ticket : tickets) {
-            insertStatement.setString(1, ticket.getName());
+            insertStatement.setInt(1, ticket.getTicketType().getId());
             insertStatement.setDouble(2, ticket.getPrice());
             insertStatement.setInt(3, ticket.getAvailableTickets());
             insertStatement.setString(4, eventId.toHexString());
@@ -286,5 +318,20 @@ public class EventMySQLDAO implements IEventDAO {
         PreparedStatement deleteStatement = connection.prepareStatement(deleteQuery);
         deleteStatement.setString(1, eventId.toHexString());
         deleteStatement.executeUpdate();
+    }
+
+    @Override
+    public void registerObserver(Observer observer) {
+        observers.add(observer);
+    }
+
+    @Override
+    public void removeObserver(Observer observer) {
+        observers.remove(observer);
+    }
+
+    @Override
+    public void notifyObservers(Object o) {
+        observers.forEach(observer -> observer.onDataChanged(o));
     }
 }

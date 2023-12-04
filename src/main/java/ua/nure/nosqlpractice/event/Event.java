@@ -2,6 +2,7 @@ package ua.nure.nosqlpractice.event;
 
 import lombok.*;
 import org.bson.types.ObjectId;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +16,7 @@ public class Event {
     private ObjectId eventId;
     private String name;
     private String description;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date eventDate;
 
     private Venue venue;

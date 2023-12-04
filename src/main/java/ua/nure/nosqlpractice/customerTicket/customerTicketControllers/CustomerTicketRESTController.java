@@ -1,19 +1,19 @@
-package ua.nure.nosqlpractice.customerTicket;
+package ua.nure.nosqlpractice.customerTicket.customerTicketControllers;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.customerTicket.customerTicketDao.ICustomerTicketDAO;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/customer-tickets")
 
-public class CustomerTicketController {
+public class CustomerTicketRESTController {
 
     @Autowired
     @Qualifier("customerTicketMySQLDAO")

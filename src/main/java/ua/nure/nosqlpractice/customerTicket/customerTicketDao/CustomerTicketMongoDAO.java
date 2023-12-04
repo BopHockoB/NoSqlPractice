@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.dbConnections.MongoConnection;
 import ua.nure.nosqlpractice.event.Event;
+import ua.nure.nosqlpractice.event.TicketType;
 import ua.nure.nosqlpractice.event.eventDao.EventMongoDAO;
 import ua.nure.nosqlpractice.event.eventDao.IEventDAO;
 
@@ -93,7 +94,7 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
                     .append("eventId", customerTicket.getEvent().getEventId())
                     .append("userId", customerTicket.getUserId())
                     .append("purchasedDate", customerTicket.getPurchasedDate())
-                    .append("ticketType", customerTicket.getTicketType())
+                    .append("ticketType", customerTicket.getTicketType().getName())
                     .append("price", customerTicket.getPrice());
         }
         return null;
@@ -118,7 +119,7 @@ public class CustomerTicketMongoDAO implements ICustomerTicketDAO {
                     .setEvent(event)
                     .setUserId(userId)
                     .setPurchasedDate(purchasedDate)
-                    .setTicketType(ticketType)
+                    .setTicketType(new TicketType(null, ticketType))
                     .setPrice(price)
                     .build();
         }

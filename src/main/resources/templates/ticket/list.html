@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>List of Customer Tickets</title>
+</head>
+<body>
+<h1>List of Customer Tickets</h1>
+<p th:text="${message}"></p>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Event</th>
+        <th>User</th>
+        <th>Price</th>
+        <th>Purchased Date</th>
+        <th>Ticket type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="customerTicket : ${customerTickets}">
+        <td th:text="${customerTicket.ticketId}"></td>
+        <td th:text="${customerTicket.event.name}"></td>
+        <td th:text="${customerTicket.userId}"></td>
+        <td th:text="${customerTicket.price}"></td>
+        <td th:text="${customerTicket.purchasedDate}"></td>
+        <td th:text="${customerTicket.ticketType.name}"></td>
+
+        <td>
+            <a th:href="@{'/tickets/edit/' + ${customerTicket.ticketId}}">Edit</a>
+            <a th:href="@{'/tickets/delete/' + ${customerTicket.ticketId}}">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<a href="/tickets/new">Add New Ticket</a>
+</body>
+</html>

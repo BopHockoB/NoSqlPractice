@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Ticket {
     private Integer id;
-    private String name;
+    private TicketType ticketType;
     private Double price;
     private Integer availableTickets;
 

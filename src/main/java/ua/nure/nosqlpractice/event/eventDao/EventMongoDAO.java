@@ -10,10 +10,7 @@ import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import ua.nure.nosqlpractice.dbConnections.MongoConnection;
-import ua.nure.nosqlpractice.event.Event;
-import ua.nure.nosqlpractice.event.EventCategory;
-import ua.nure.nosqlpractice.event.Ticket;
-import ua.nure.nosqlpractice.event.Venue;
+import ua.nure.nosqlpractice.event.*;
 
 import java.util.*;
 
@@ -98,7 +95,7 @@ public class EventMongoDAO implements IEventDAO {
             List<Document> ticketDocuments = new ArrayList<>();
             for (Ticket ticket : event.getTickets()) {
                 Document ticketDocument = new Document()
-                        .append("name", ticket.getName())
+                        .append("name", ticket.getTicketType().getName())
                         .append("price", ticket.getPrice())
                         .append("availableTickets", ticket.getAvailableTickets());
                 ticketDocuments.add(ticketDocument);
@@ -115,7 +112,7 @@ public class EventMongoDAO implements IEventDAO {
                 Document ticketDocument = new Document()
                         .append("id", eventCategory.getId())
                         .append("categoryName", eventCategory.getCategoryName());
-                ticketDocuments.add(ticketDocument);
+                eventCategoriesDocuments.add(ticketDocument);
             }
 
             return new Document("_id", event.getEventId())
@@ -160,7 +157,7 @@ public class EventMongoDAO implements IEventDAO {
                 Double ticketPrice = ticketDocument.getDouble("price");
                 Integer availableTickets = ticketDocument.getInteger("availableTickets");
 
-                Ticket ticket = new Ticket(null ,ticketName, ticketPrice, availableTickets);
+                Ticket ticket = new Ticket(null , new TicketType(null, ticketName), ticketPrice, availableTickets);
                 tickets.add(ticket);
             }
 

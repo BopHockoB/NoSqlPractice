@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Edit User</title>
+</head>
+<body>
+<h1>Edit User</h1>
+<form th:action="@{/users/edit/{userId}(userId=${user.userId})}" th:object="${user}" method="post">
+  <input type="hidden" th:field="*{userId}">
+
+  <label>Email:</label>
+  <input type="email" th:field="*{email}" required><br><br>
+
+  <label>Password:</label>
+  <input type="password" th:field="*{password}" required><br><br>
+
+  <label>First Name:</label>
+  <input type="text" th:field="*{firstName}" required><br><br>
+
+  <label>Last Name:</label>
+  <input type="text" th:field="*{lastName}" required><br><br>
+
+  <label>Age:</label>
+  <input type="number" th:field="*{age}" required><br><br>
+
+
+  <input type="submit" value="Update User">
+</form>
+
+<form th:action="@{/users/delete/{userId}(userId=${user.userId})}" method="get">
+  <input type="submit" value="Delete User" onclick="return confirm('Are you sure you want to delete this user?')">
+</form>
+
+<a th:href="@{/users}">Back to User List</a>
+</body>
+</html>

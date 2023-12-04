@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Edit Customer Ticket</title>
+</head>
+<body>
+<h1>Edit Customer Ticket</h1>
+<form method="post" th:action="@{'/tickets/edit/' + ${customerTicket.ticketId}}" th:object="${customerTicket}">
+
+  <label for="userId">User ID:</label>
+  <select id="userId" name="userId" th:field="*{userId}" required>
+    <option th:each="user : ${users}" th:value="${user.userId}" th:text="${user.userId}"
+            th:selected="${user.userId == customerTicket.userId}"></option>
+  </select>
+
+  <label for="price">Price:</label>
+  <input type="text" id="price" name="price" th:field="*{price}" value="${customerTicket.price}" required/>
+
+  <label for="purchasedDate">Purchased Date:</label>
+  <input type="date" th:pattern="yyyy-MM-dd" id="purchasedDate" name="purchasedDate"
+         th:field="*{purchasedDate}" value="${customerTicket.purchasedDate}" required/>
+
+  <label for="eventId">Select Event:</label>
+  <select id="eventId" name="eventId" th:field="*{event.eventId}" required>
+    <option th:each="event : ${events}" th:value="${event.eventId}" th:text="${event.name}"
+            th:selected="${event.eventId == customerTicket.event.eventId}"></option>
+  </select>
+
+  <!--    <label for="ticketType">Select Ticket Type:</label>-->
+  <!--    <select id="ticketType" name="ticketType" >-->
+  <!--         Ticket type options will be dynamically added here -->
+  <!--    </select>-->
+
+  <p id="console"></p>
+  <button type="submit">Update Ticket</button>
+</form>
+<a href="/tickets">Back to Ticket List</a>
+
+</body>
+</html>

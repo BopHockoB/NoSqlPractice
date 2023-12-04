@@ -43,9 +43,9 @@ public class EventMongoDAOTest {
         eventCategories2.add(new EventCategory(null, "EventCategory 4"));
         event2.setEventCategories(eventCategories2);
 
-        List<Ticket> tickets2 = new ArrayList();
-        tickets2.add(new Ticket(null, "Standard", 60.0, 80));
-        tickets2.add(new Ticket(null, "Premium", 85.0, 40));
+        List<Ticket> tickets2 = new ArrayList<>();
+        tickets2.add(new Ticket(null, new TicketType(null, "Standard"), 60.0, 80));
+        tickets2.add(new Ticket(null, new TicketType(null, "Premium"), 85.0, 40));
         event2.setTickets(tickets2);
 
         Event event3 = new Event();
@@ -62,9 +62,9 @@ public class EventMongoDAOTest {
         eventCategories3.add(new EventCategory(null, "EventCategory 6"));
         event3.setEventCategories(eventCategories3);
 
-        List<Ticket> tickets3 = new ArrayList();
-        tickets3.add(new Ticket(null,"Standard", 60.0, 80));
-        tickets3.add(new Ticket(null,"Premium", 85.0, 40));
+        List<Ticket> tickets3 = new ArrayList<>();
+        tickets3.add(new Ticket(null,new TicketType(null, "Standard"), 60.0, 80));
+        tickets3.add(new Ticket(null,new TicketType(null, "Premium"), 85.0, 40));
         event3.setTickets(tickets3);
 
         eventMongoDAO.create(event2);
@@ -97,8 +97,9 @@ public class EventMongoDAOTest {
         Event event = createEventObject();
         eventMongoDAO.create(event);
 
-        event = eventMongoDAO.getByName(event.getName()).get();
+        event = eventMongoDAO.getByName(event.getName()).orElse(null);
         String newEventName = "TestName";
+        assert event != null;
         event.setName(newEventName);
 
         eventMongoDAO.update(event);
@@ -137,9 +138,9 @@ public class EventMongoDAOTest {
         eventCategories.add(new EventCategory(2, "EventCategory 2"));
         event.setEventCategories(eventCategories);
 
-        List<Ticket> tickets = new ArrayList();
-        tickets.add(new Ticket(1,"Standard", 60.0, 80));
-        tickets.add(new Ticket(2,"Premium", 85.0, 40));
+        List<Ticket> tickets = new ArrayList<>();
+        tickets.add(new Ticket(1,new TicketType(null, "Standard"), 60.0, 80));
+        tickets.add(new Ticket(2,new TicketType(null, "Premium"), 85.0, 40));
         event.setTickets(tickets);
 
         return event;

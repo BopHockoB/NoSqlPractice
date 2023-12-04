@@ -5,9 +5,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.util.DotPath;
 import org.springframework.test.context.junit4.SpringRunner;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.customerTicket.customerTicketDao.CustomerTicketMySQLDAO;
+import ua.nure.nosqlpractice.event.TicketType;
 import ua.nure.nosqlpractice.event.eventDao.EventMySQLDAO;
 import ua.nure.nosqlpractice.user.userDao.UserMySQLDAO;
 
@@ -45,10 +47,10 @@ public class CustomerTicketMySQLDAOTest {
         return new CustomerTicket.CustomerTicketBuilder()
                 .setTicketId(new ObjectId())
                 .setPurchasedDate(new Date())
-                .setTicketType("Standard")
+                .setTicketType(new TicketType(1, "Standard"))
                 .setPrice(60.0)
-                .setEvent(eventMySQLDAO.getByName("Sample Event 6557859fe6ea474565b0c8fa").orElse(null))
-                .setUserId(userMySQLDAO.getById(new ObjectId("655c99e09a78b31ba88552be")).get().getUserId())
+                .setEvent(eventMySQLDAO.getById(new ObjectId("656b0b761489752a3e3cfda4")).orElse(null))
+                .setUserId(userMySQLDAO.getById(new ObjectId("6568983c0af578498ea2a797")).orElse(null).getUserId())
                 .build();
     }
 
@@ -64,8 +66,8 @@ public class CustomerTicketMySQLDAOTest {
         assertNotNull(retrievedTicket);
 
         // Modify the ticket type
-        String newTicketType = "Updated Ticket Type";
-        retrievedTicket.setTicketType(newTicketType);
+        Double newPrice = 555.;
+        retrievedTicket.setPrice(newPrice);
 
         // Update the customer ticket
         customerTicketMySQLDAO.update(retrievedTicket);
@@ -73,7 +75,7 @@ public class CustomerTicketMySQLDAOTest {
         // Retrieve the updated customer ticket
         CustomerTicket updatedTicket = customerTicketMySQLDAO.getById(ticketId).orElse(null);
         assertNotNull(updatedTicket);
-        assertEquals(newTicketType, updatedTicket.getTicketType());
+        assertEquals(newPrice, updatedTicket.getPrice());
     }
 
     @Test

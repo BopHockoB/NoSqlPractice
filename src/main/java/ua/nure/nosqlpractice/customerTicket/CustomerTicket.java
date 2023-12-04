@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
+import org.springframework.format.annotation.DateTimeFormat;
 import ua.nure.nosqlpractice.event.Event;
+import ua.nure.nosqlpractice.event.TicketType;
 
 import java.util.Date;
 
@@ -17,8 +19,9 @@ public class CustomerTicket {
     private ObjectId ticketId;
     private Event event;
     private ObjectId userId;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date purchasedDate;
-    private String ticketType;
+    private TicketType ticketType;
     private Double price;
 
     private CustomerTicket(CustomerTicketBuilder builder) {
@@ -38,7 +41,7 @@ public class CustomerTicket {
         private Event event;
         private ObjectId userId;
         private Date purchasedDate;
-        private String ticketType;
+        private TicketType ticketType;
         private Double price;
 
         // Builder methods for setting fields
@@ -62,7 +65,7 @@ public class CustomerTicket {
             return this;
         }
 
-        public CustomerTicketBuilder setTicketType(String ticketType) {
+        public CustomerTicketBuilder setTicketType(TicketType ticketType) {
             this.ticketType = ticketType;
             return this;
         }

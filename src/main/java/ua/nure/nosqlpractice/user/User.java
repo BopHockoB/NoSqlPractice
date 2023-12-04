@@ -7,7 +7,6 @@ import org.bson.types.ObjectId;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @AllArgsConstructor
