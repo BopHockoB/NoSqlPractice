@@ -8,6 +8,10 @@
 <h1>User List</h1>
 <p th:text="${message}"></p>
 
+<div th:if="${param.error}" >
+    <p>There's no such previous value</p>
+</div>
+
 <table>
     <thead>
     <tr>
@@ -33,5 +37,8 @@
     </tbody>
 </table>
 <a th:href="@{/users/new}">Add New User</a>
+<form th:action="@{/users/previous}" method="post">
+    <input type="submit" value="Previous" onclick="return confirm('Are you sure you want to revert?')">
+</form>
 </body>
 </html>

@@ -5,6 +5,7 @@ import lombok.*;
 import org.bson.types.ObjectId;
 
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
+import ua.nure.nosqlpractice.user.userMemento.UserMemento;
 
 import java.util.List;
 
@@ -35,6 +36,22 @@ public class User {
         this.lastName = builder.lastName;
         this.age = builder.age;
         this.tickets = builder.tickets;
+    }
+
+    public UserMemento saveState() {
+        return new UserMemento(this);
+    }
+
+    public void restoreState(UserMemento memento) {
+        User user = memento.getState();
+
+        this.setUserId(user.getUserId());
+        this.setEmail(user.getEmail());
+        this.setPassword(user.getPassword());
+        this.setFirstName(user.getFirstName());
+        this.setLastName(user.getLastName());
+        this.setAge(user.getAge());
+        this.setTickets(user.getTickets());
     }
 
     @NoArgsConstructor
