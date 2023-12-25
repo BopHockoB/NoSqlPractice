@@ -7,6 +7,10 @@
 <body>
 <h1>List of Customer Tickets</h1>
 <p th:text="${message}"></p>
+
+<div th:if="${param.restricted}" >
+    <p>You don't have required authorities</p>
+</div>
 <table border="1">
     <thead>
     <tr>

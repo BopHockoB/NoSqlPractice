@@ -13,4 +13,6 @@ public interface IUserDAO {
     List<User> getAll();
     void update(User user);
     void delete(ObjectId id);
+
+    Optional<User> getByEmail(String email);
 }

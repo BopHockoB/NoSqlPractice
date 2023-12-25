@@ -5,9 +5,11 @@ import lombok.*;
 import org.bson.types.ObjectId;
 
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
+import ua.nure.nosqlpractice.user.role.Role;
 import ua.nure.nosqlpractice.user.userMemento.UserMemento;
 
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -27,6 +29,8 @@ public class User {
     private short age;
     @JsonProperty("tickets") // Annotate the field with the desired JSON field name
     private List<CustomerTicket> tickets;
+    @JsonProperty("role") // Annotate the field with the desired JSON field name
+    private Set<Role> roles;
 
     private User(UserBuilder builder){
         this.userId = builder.userId;

@@ -1,6 +1,5 @@
 package ua.nure.nosqlpractice.user.userControllers;
 
-import jakarta.websocket.server.PathParam;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -8,7 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.nosqlpractice.user.User;
 import ua.nure.nosqlpractice.user.userDao.IUserDAO;
-import ua.nure.nosqlpractice.user.userDao.UserMySQLDAO;
+import ua.nure.nosqlpractice.user.userDao.UserDAOProxy;
 import ua.nure.nosqlpractice.user.userMemento.UserCaretaker;
 
 
@@ -24,11 +23,11 @@ public class UserController {
 
     private final UserCaretaker caretaker;
 
-    public UserController(@Qualifier("userMySQLDAO") IUserDAO userDAO, UserCaretaker caretaker) {
+    public UserController(@Qualifier("userDAOProxy") IUserDAO userDAO, UserCaretaker caretaker) {
 
         this.userDAO = userDAO;
         this.caretaker = caretaker;
-        ((UserMySQLDAO) userDAO).registerObserver(
+        ((UserDAOProxy) userDAO).registerObserver(
                 o -> message = o.toString()
         );
 
@@ -51,6 +50,7 @@ public class UserController {
     // Display form for adding a new user
     @GetMapping("/new")
     public String showAddUserForm(Model model) {
+
         model.addAttribute("user", new User());
         return "user/new";
     }
@@ -59,8 +59,13 @@ public class UserController {
     @PostMapping("/new")
     public String addUser(@ModelAttribute("user") User user) {
         user.setUserId(new ObjectId());
-        userDAO.create(user);
-        return "redirect:/users";
+        try {
+            userDAO.create(user);
+            return "redirect:/users";
+        } catch (SecurityException e) {
+            return "redirect:/users?restricted";
+        }
+
     }
 
     // Display form for updating a user by ID
@@ -69,22 +74,32 @@ public class UserController {
         User user = userDAO.getById(userId).orElse(null);
         model.addAttribute("user", user);
         return "user/edit";
+
     }
 
     // Update a user
     @PostMapping("/edit/{userId}")
     public String updateUser(@PathVariable("userId") ObjectId userId, @ModelAttribute("user") User user) {
-        user.setUserId(userId);
-        caretaker.addMemento(userDAO.getById(userId).orElse(null).saveState());
-        userDAO.update(user);
-        return "redirect:/users";
+
+        try {
+            user.setUserId(userId);
+            caretaker.addMemento(userDAO.getById(userId).orElse(null).saveState());
+            userDAO.update(user);
+            return "redirect:/users";
+        } catch (SecurityException e) {
+            return "redirect:/users?restricted";
+        }
     }
 
     // Delete a user by ID
     @GetMapping("/delete/{userId}")
     public String deleteUser(@PathVariable("userId") ObjectId userId) {
-        userDAO.delete(userId);
-        return "redirect:/users";
+        try {
+            userDAO.delete(userId);
+            return "redirect:/users";
+        } catch (SecurityException e) {
+            return "redirect:/users?restricted";
+        }
     }
 
     @PostMapping("/previous")
@@ -114,5 +129,7 @@ public class UserController {
         }
         return "redirect:/users?error";
     }
+
+
 
 }

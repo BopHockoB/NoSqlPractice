@@ -12,6 +12,9 @@
     <p>There's no such previous value</p>
 </div>
 
+<div th:if="${param.restricted}" >
+    <p>You don't have required authorities</p>
+</div>
 <table>
     <thead>
     <tr>
@@ -40,5 +43,7 @@
 <form th:action="@{/users/previous}" method="post">
     <input type="submit" value="Previous" onclick="return confirm('Are you sure you want to revert?')">
 </form>
+
+<a th:href="@{/logout}">Logout</a>
 </body>
 </html>

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
-import ua.nure.nosqlpractice.customerTicket.customerTicketDao.CustomerTicketMySQLDAO;
+import ua.nure.nosqlpractice.customerTicket.customerTicketDao.CustomerTicketDAOProxy;
 import ua.nure.nosqlpractice.customerTicket.customerTicketDao.ICustomerTicketDAO;
 import ua.nure.nosqlpractice.event.Event;
 import ua.nure.nosqlpractice.event.TicketType;
@@ -27,14 +27,14 @@ public class CustomerTicketController {
     private String message = "There's no message yet";
 
     @Autowired
-    public CustomerTicketController(@Qualifier("customerTicketMySQLDAO") ICustomerTicketDAO customerTicketDAO,
+    public CustomerTicketController(@Qualifier("customerTicketDAOProxy") ICustomerTicketDAO customerTicketDAO,
                                     @Qualifier("eventMySQLDAO") IEventDAO eventDAO,
                                     @Qualifier("userMySQLDAO") IUserDAO userDAO) {
         this.customerTicketDAO = customerTicketDAO;
         this.eventDAO = eventDAO;
         this.userDAO = userDAO;
 
-        ((CustomerTicketMySQLDAO)customerTicketDAO).registerObserver(
+        ((CustomerTicketDAOProxy)customerTicketDAO).registerObserver(
                 o -> message = o.toString()
         );
     }
@@ -75,11 +75,17 @@ public class CustomerTicketController {
     // Save a new customer ticket
     @PostMapping("/new")
     public String addCustomerTicket(@ModelAttribute("customerTicket") CustomerTicket customerTicket) {
-       customerTicket.setTicketId(new ObjectId());
-       customerTicket.setTicketType(new TicketType(1, null));
-        customerTicketDAO.create(customerTicket);
 
-        return "redirect:/tickets";
+        try {
+            customerTicket.setTicketId(new ObjectId());
+            customerTicket.setTicketType(new TicketType(1, null));
+            customerTicketDAO.create(customerTicket);
+
+            return "redirect:/tickets";
+        }catch (SecurityException e){
+            return "redirect:/tickets?restricted";
+        }
+
     }
 
     // Display form for updating a customer ticket by ID
@@ -103,16 +109,24 @@ public class CustomerTicketController {
     @PostMapping("/edit/{ticketId}")
     public String updateCustomerTicket(@PathVariable("ticketId") ObjectId ticketId,
                                        @ModelAttribute("customerTicket") CustomerTicket customerTicket) {
-        customerTicket.setTicketId(ticketId);
-        customerTicket.setTicketType(new TicketType(1, null));
-        customerTicketDAO.update(customerTicket);
-        return "redirect:/tickets";
+        try {
+            customerTicket.setTicketId(ticketId);
+            customerTicket.setTicketType(new TicketType(1, null));
+            customerTicketDAO.update(customerTicket);
+            return "redirect:/tickets";
+        }catch (SecurityException e){
+            return "redirect:/tickets?restricted";
+        }
     }
 
     // Delete a customer ticket by ID
     @GetMapping("/delete/{ticketId}")
     public String deleteCustomerTicket(@PathVariable("ticketId") ObjectId ticketId) {
-        customerTicketDAO.delete    (ticketId);
-        return "redirect:/tickets";
+        try {
+            customerTicketDAO.delete(ticketId);
+            return "redirect:/tickets";
+        }catch (SecurityException e){
+            return "redirect:/tickets?restricted";
+        }
     }
 }

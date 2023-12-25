@@ -2,6 +2,7 @@ package ua.nure.nosqlpractice.customerTicket.customerTicketDao;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import ua.nure.nosqlpractice.customerTicket.CustomerTicket;
 import ua.nure.nosqlpractice.dbConnections.MySQLConnection;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Primary
 public class CustomerTicketMySQLDAO implements ICustomerTicketDAO, Observable {
 
     private final Connection connection;

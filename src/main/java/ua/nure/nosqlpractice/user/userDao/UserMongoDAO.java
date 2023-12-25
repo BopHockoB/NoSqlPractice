@@ -60,6 +60,14 @@ public class UserMongoDAO implements IUserDAO {
         return Optional.ofNullable(documentToUser(document));
     }
 
+    public Optional<User> getByEmail(String email) {
+
+        Document query = new Document("email", email);
+        Document document = collection.find(query).first();
+
+        return Optional.ofNullable(documentToUser(document));
+    }
+
     @Override
     public List<User> getAll() {
 

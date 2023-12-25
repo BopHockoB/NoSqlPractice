@@ -1,7 +1,7 @@
 package ua.nure.nosqlpractice.event.eventDao;
 
-import ch.qos.logback.core.BasicStatusManager;
 import org.bson.types.ObjectId;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import ua.nure.nosqlpractice.dbConnections.MySQLConnection;
 import ua.nure.nosqlpractice.event.*;
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Primary
 public class EventMySQLDAO implements IEventDAO, Observable {
 
     private final Connection connection;
