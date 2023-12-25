@@ -34,13 +34,18 @@ public class UserCaretaker {
 
     //Delete last memento from list
     public void delete(){
+        if (index == mementoList.size())
+            index--;
         mementoList.remove(mementoList.size() - 1);
     }
 
     //Delete memento by index
-    public void delete(int index){
-        if (index < 0 || index >= mementoList.size())
+    public void delete(int i){
+        if (i < 0 || i >= mementoList.size())
             return;
-        mementoList.remove(index);
+        if (i <= index - 1)
+            index--;
+
+        mementoList.remove(i);
     }
 }
