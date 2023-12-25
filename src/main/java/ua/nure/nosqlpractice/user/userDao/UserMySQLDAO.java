@@ -7,6 +7,7 @@ import ua.nure.nosqlpractice.dbConnections.MySQLConnection;
 import ua.nure.nosqlpractice.observers.Observable;
 import ua.nure.nosqlpractice.observers.Observer;
 import ua.nure.nosqlpractice.user.User;
+import ua.nure.nosqlpractice.user.role.Role;
 import ua.nure.nosqlpractice.user.role.roleDAO.IRoleDAO;
 
 
@@ -34,6 +35,9 @@ public class UserMySQLDAO implements IUserDAO, Observable {
 
         String query = "INSERT INTO user (user_id, email, password, first_name, last_name, age) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
+            String roleQuery = "INSERT  INTO  user_has_role (user_id, role_id) VALUES (?, ?)";
+
+
             statement.setString(1, user.getUserId().toHexString());
             statement.setString(2, user.getEmail());
             statement.setString(3, user.getPassword());
@@ -41,10 +45,19 @@ public class UserMySQLDAO implements IUserDAO, Observable {
             statement.setString(5, user.getLastName());
             statement.setShort(6, user.getAge());
             statement.executeUpdate();
+            try (PreparedStatement roleStatement = connection.prepareStatement(roleQuery)) {
+                for (Role role : user.getRoles()) {
+                    int roleId = role.ordinal() + 1; //Getting index Enum + 1 for role id in DB
+
+                    roleStatement.setString(1, user.getUserId().toHexString());
+                    roleStatement.setInt(2, roleId);
+
+                    roleStatement.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             notifyObservers(user.toString() + " was inserted in DB");
         }
     }
@@ -86,9 +99,7 @@ public class UserMySQLDAO implements IUserDAO, Observable {
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                    Optional<User> user = Optional.of(mapResultSetToUser(resultSet));
-                   user.ifPresent(u -> {
-                       u.setRoles(roleDAO.getAllByUserId(u.getUserId()));
-                   });
+                   user.ifPresent(u -> u.setRoles(roleDAO.getAllByUserId(u.getUserId())));
                    return user;
                 }
             }
@@ -116,6 +127,8 @@ public class UserMySQLDAO implements IUserDAO, Observable {
     @Override
     public void update(User user) {
         String query = "UPDATE user SET email = ?, password = ?, first_name = ?, last_name = ?, age = ? WHERE user_id = ?";
+        String roleDeletionQuery = "DELETE user_has_role WHERE user_id = " + user.getUserId().toHexString();
+        String roleQuery = "INSERT  INTO  user_has_role (user_id, role_id) VALUES (?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setString(1, user.getEmail());
             statement.setString(2, user.getPassword());
@@ -124,11 +137,23 @@ public class UserMySQLDAO implements IUserDAO, Observable {
             statement.setShort(5, user.getAge());
             statement.setString(6, user.getUserId().toHexString());
             statement.executeUpdate();
+            try (PreparedStatement roleStatement = connection.prepareStatement(roleQuery)) {
+                connection.createStatement().execute(roleDeletionQuery);
+
+                for (Role role : user.getRoles()) {
+                    int roleId = role.ordinal() + 1; //Getting index Enum + 1 for role id in DB
+
+                    roleStatement.setString(1, user.getUserId().toHexString());
+                    roleStatement.setInt(2, roleId);
+
+                    roleStatement.executeUpdate();
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         finally {
-            notifyObservers(user.toString() + " was updated in DB");
+            notifyObservers(user + " was updated in DB");
         }
     }
 

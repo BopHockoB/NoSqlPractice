@@ -17,7 +17,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userDAO.getByEmail(email)
-                .map(UserDetailImp::new)
+                .map(UserDetailsImp::new)
                 .orElseThrow(()-> new UsernameNotFoundException("User not found"));
     }
 }

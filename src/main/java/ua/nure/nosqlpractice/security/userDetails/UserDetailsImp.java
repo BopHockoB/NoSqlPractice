@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Data
-public class UserDetailImp implements UserDetails {
+public class UserDetailsImp implements UserDetails {
 
     private String username;
     private String password;
     private List<GrantedAuthority> authorities;
 
-    public UserDetailImp(User user) {
+    public UserDetailsImp(User user) {
         this.username = user.getEmail();
         this.password = user.getPassword();
         this.authorities = user.getRoles().stream()
