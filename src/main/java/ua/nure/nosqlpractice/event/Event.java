@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 
 @Data
@@ -31,6 +32,25 @@ public class Event {
         this.venue = builder.address;
         this.eventCategories = builder.eventCategories;
         this.tickets = builder.tickets;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Event event)) return false;
+        if (this.hashCode() != event.hashCode()) return false;
+        return Objects.equals(eventId, event.eventId)
+                && Objects.equals(name, event.name)
+                && Objects.equals(description, event.description)
+                && Objects.equals(eventDate.getTime(), event.eventDate.getTime())
+                && Objects.equals(venue, event.venue)
+                && Objects.equals(eventCategories, event.eventCategories)
+                && Objects.equals(tickets, event.tickets);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(eventId, name, description, eventDate, venue, eventCategories, tickets);
     }
 
     @NoArgsConstructor

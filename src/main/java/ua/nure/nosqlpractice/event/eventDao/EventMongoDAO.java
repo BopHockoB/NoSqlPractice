@@ -94,8 +94,13 @@ public class EventMongoDAO implements IEventDAO {
                     event.setEventId(new ObjectId());
             List<Document> ticketDocuments = new ArrayList<>();
             for (Ticket ticket : event.getTickets()) {
+                Document ticketTypeDocument = new Document()
+                        .append("id", ticket.getTicketType().getId())
+                        .append("name", ticket.getTicketType().getName());
+
                 Document ticketDocument = new Document()
-                        .append("name", ticket.getTicketType().getName())
+                        .append("id", ticket.getId())
+                        .append("ticketType", ticketTypeDocument)
                         .append("price", ticket.getPrice())
                         .append("availableTickets", ticket.getAvailableTickets());
                 ticketDocuments.add(ticketDocument);
@@ -103,6 +108,7 @@ public class EventMongoDAO implements IEventDAO {
 
             Venue venue = event.getVenue();
             Document venueDocument = new Document()
+                    .append("id", venue.getId())
                     .append("venueName", venue.getName())
                     .append("venueCity", venue.getCity())
                     .append("venueCountry", venue.getCountry());
@@ -135,6 +141,7 @@ public class EventMongoDAO implements IEventDAO {
 
             Document venueDocument = document.get("venue", Document.class);
             Venue venue = new Venue.VenueBuilder()
+                        .setId(venueDocument.getInteger("id"))
                         .setName(venueDocument.getString("venueName"))
                         .setCity(venueDocument.getString("venueCity"))
                         .setCountry(venueDocument.getString("venueCountry"))
@@ -153,11 +160,15 @@ public class EventMongoDAO implements IEventDAO {
             List<Ticket> tickets = new ArrayList<>();
             List<Document> ticketDocuments = document.get("tickets", ArrayList.class);
             for (Document ticketDocument : ticketDocuments) {
-                String ticketName = ticketDocument.getString("name");
+                Integer ticketId = ticketDocument.getInteger("id");
+
+                Document ticketTypeDocument = ticketDocument.get("ticketType", Document.class);
+                Integer ticketTypeId = ticketTypeDocument.getInteger("id");
+                String ticketName = ticketTypeDocument.getString("name");
                 Double ticketPrice = ticketDocument.getDouble("price");
                 Integer availableTickets = ticketDocument.getInteger("availableTickets");
 
-                Ticket ticket = new Ticket(null , new TicketType(null, ticketName), ticketPrice, availableTickets);
+                Ticket ticket = new Ticket(ticketId , new TicketType(ticketTypeId, ticketName), ticketPrice, availableTickets);
                 tickets.add(ticket);
             }
 
